@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Markdown Studio v10.0.1 · ΣΗΜΜΥ</title>
+    <link rel="stylesheet" href="studio.css?v=10.0.1" />
+    <link rel="stylesheet" href="ui.css?v=10.0.1" />
+    <script>
+      window.MathJax = {
+        loader: { load: ["[tex]/ams"] },
+        tex: {
+          packages: { "[+]": ["ams"] },
+          inlineMath: [
+            ["\\(", "\\)"],
+            ["$", "$"],
+          ],
+          displayMath: [
+            ["\\[", "\\]"],
+            ["$$", "$$"],
+          ],
+        },
+        svg: { fontCache: "local" },
+        startup: { typeset: false },
+      };
+    </script>
+    <script src="vendor/mathjax.bundle.js?v=10.0.1" defer></script>
+    <script src="search.js?v=10.0.1" defer></script>
+    <script src="studio.js?v=10.0.1" defer></script>
+    <script src="reports.js?v=10.0.1" defer></script>
+    <script src="ui.js?v=10.0.1" defer></script>
+    <script src="tools.js?v=10.0.1" defer></script>
+    <script src="ocr.js?v=10.0.1" defer></script>
+    <script src="feedback.js?v=10.0.1" defer></script>
+  </head>
+  <body>
+    <header class="appbar">
+      <a class="identity" href="#/editor" aria-label="Markdown Studio · Editor"
+        ><span class="logo">M↓</span>
+        <div>
+          <strong>Markdown Studio <small>v10.0.1 · ΣΗΜΜΥ</small></strong>
+          <p>Λύσεις γραμμένες από φοιτητές για φοιτητές</p>
+        </div></a
+      >
+      <div class="header-search">
+        <input
+          id="globalSearch"
+          placeholder="Αναζήτηση λειτουργίας…  Ctrl K"
+          aria-label="Αναζήτηση λειτουργιών"
+        />
+      </div>
+      <button id="helpStart" class="icon-button" aria-label="Βοήθεια εκκίνησης">
+        ?
+      </button>
+    </header>
+    <nav class="toolbar" aria-label="Κύρια πλοήγηση">
+      <a href="#/editor">Συγγραφή</a
+      ><a href="#/document" id="toggleMeta">Στοιχεία εξέτασης</a
+      ><a href="#/reports" id="btnReports">Ενημερώσεις PR</a
+      ><a href="#/tools">Εργαλεία LaTeX</a><span class="nav-spacer"></span
+      ><a href="#/pdf" id="togglePDF">PDF editor</a
+      ><a href="#/settings" id="toggleSettings">Ρυθμίσεις</a
+      ><a href="#/feedback">Σχόλια</a>
+    </nav>
+    <div class="breadcrumbs">
+      <span id="routeTitle">Συγγραφή</span><span id="summaryMeta"></span
+      ><span id="backendState" class="status">Έλεγχος Python…</span>
+    </div>
+    <div id="editorActions" class="editor-actions">
+      <div class="row">
+        <button id="btnNew">Νέο</button><button id="btnOpen">Άνοιγμα</button
+        ><button id="btnSave">Αποθήκευση .md</button
+        ><button id="btnPDF">PDF</button
+        ><button id="btnPR" class="strong">Υποβολή PR</button>
+      </div>
+      <div class="row">
+        <button id="btnGithubAuth">GitHub: σύνδεση</button
+        ><button id="btnCheckPR">Έλεγχος PR</button>
+      </div>
+    </div>
+    <section id="metaPanel" class="collapsible" hidden>
+      <div class="sectionHeading">
+        <h2>Στοιχεία εξέτασης</h2>
+        <span>Οι αλλαγές ενημερώνουν αμέσως το εξώφυλλο.</span>
+      </div>
+      <div class="formgrid">
+        <label
+          >Εξάμηνο
+          <select id="semester">
+            <option value="1">1ο</option>
+            <option value="2">2ο</option>
+            <option value="3">3ο</option>
+            <option value="4">4ο</option>
+            <option value="5">5ο</option>
+            <option value="6">6ο</option>
+            <option value="7">7ο</option>
+            <option value="8">8ο</option>
+            <option value="9">9ο</option>
+          </select></label
+        >
+        <label
+          >Μάθημα
+          <input
+            id="course"
+            placeholder="π.χ. Γραμμική Άλγεβρα"
+            value="" /><datalist id="courseList" hidden></datalist
+          ><small id="courseHint"></small>
+          <div id="courseSuggestions" hidden></div
+        ></label>
+        <label
+          >Έτος εξέτασης
+          <input id="year" type="number" min="1990" max="2100" value="2025"
+        /></label>
+        <label
+          >Εξέταση
+          <select id="period">
+            <option value="ΚΑΝ">Κανονική (ΚΑΝ)</option>
+            <option value="ΕΠΑΝ">Επαναληπτική (ΕΠΑΝ)</option>
+          </select></label
+        >
+        <label
+          >Λύτης (Discord) <input id="solver" placeholder="username"
+        /></label>
+        <label
+          >Ελεγκτής Α (Discord) <input id="reviewerA" placeholder="username"
+        /></label>
+        <label
+          >Ελεγκτής Β (Discord) <input id="reviewerB" placeholder="username"
+        /></label>
+        <label
+          >LaTeX πρότυπο
+          <select id="template"></select
+        ></label>
+        <label
+          >Χρώμα προτύπου <input id="accent" type="color" value="#7446a7"
+        /></label>
+        <label
+          >Γραμματοσειρά
+          <select id="font">
+            <option value="serif">Serif</option>
+            <option value="sans">Sans-serif</option>
+          </select></label
+        >
+        <label
+          >Περιθώρια (mm)
+          <input id="margin" type="number" min="12" max="35" value="23"
+        /></label>
+        <label class="full"
+          >Υπότιτλος εξωφύλλου
+          <input
+            id="tagline"
+            value="Λύσεις γραμμένες από φοιτητές για φοιτητές"
+        /></label>
+      </div>
+      <div class="row">
+        <button id="refreshRepo">↻ Ανανέωση από GitHub</button
+        ><button id="btnCover">Προεπισκόπηση εξωφύλλου</button
+        ><button id="importTemplate">Εισαγωγή προτύπου JSON</button
+        ><span id="catalogStatus"></span>
+      </div>
+    </section>
+    <section id="settingsPanel" class="collapsible" hidden>
+      <div class="sectionHeading">
+        <h2>Ρυθμίσεις</h2>
+        <span>Εμφάνιση και επιλογές δημοσίευσης.</span>
+      </div>
+      <div id="appearanceSettings">
+        <h3>Εμφάνιση</h3>
+        <div class="formgrid">
+          <label
+            >Θέμα<select id="uiTheme">
+              <option value="forum">Forum · φωτεινό μπλε</option>
+              <option value="dark">Σκοτεινό</option>
+              <option value="system">Ακολουθεί το σύστημα</option>
+            </select></label
+          ><label
+            >Πυκνότητα<select id="uiDensity">
+              <option value="normal">Κανονική</option>
+              <option value="compact">Συμπαγής</option>
+            </select></label
+          ><label
+            >Φόντο εφαρμογής<input
+              id="uiBackground"
+              type="color"
+              value="#f4f7fa" /></label
+          ><label
+            >Μέγεθος κειμένου<select id="uiTextSize">
+              <option value="13">Μικρό · 13px</option>
+              <option value="14" selected>Κανονικό · 14px</option>
+              <option value="16">Μεγάλο · 16px</option>
+            </select></label
+          >
+        </div>
+        <div class="row">
+          <button id="resetAppearance">Επαναφορά θέματος</button>
+        </div>
+        <p class="subtext">
+          Αλλάζει το περιβάλλον εργασίας. Το εξώφυλλο και το PDF έχουν δικές
+          τους ρυθμίσεις.
+        </p>
+      </div>
+      <details>
+        <summary>Προχωρημένες ρυθμίσεις δημοσίευσης</summary>
+        <div class="formgrid">
+          <label class="full"
+            >Repository
+            <input id="repo" value="ece-ntua-exam-solutions/Problems-Solutions"
+          /></label>
+          <label class="full"
+            >Ακριβής διαδρομή στο repo
+            <select id="repoPath">
+              <option value="">— Επιλογή αφού φορτωθεί ο κατάλογος —</option>
+            </select></label
+          >
+          <label class="full"
+            >Χειροκίνητη διαδρομή (μόνο αν δεν υπάρχει η σωστή)
+            <input id="customPath" placeholder="Εξάμηνο/Μάθημα/Έτος/ΚΑΝ ή ΕΠΑΝ"
+          /></label>
+          <label>Base branch <input id="branch" value="main" /></label
+          ><label>PDF στο repo <input id="pdfName" value="lysi.pdf" /></label>
+          <label>LaTeX στο repo <input id="texName" value="lysi.tex" /></label
+          ><label
+            >Markdown στο repo <input id="mdName" value="lysi.md"
+          /></label>
+        </div>
+        <p class="subtext">
+          Επειδή υπάρχουν ελληνικά και λατινικά γράμματα που μοιάζουν, διάλεξε
+          την πραγματική διαδρομή από το GitHub. Η εφαρμογή δεν αντικαθιστά
+          αυτόματα χαρακτήρες στα ονόματα φακέλων.
+        </p>
+        <div class="row"><button id="btnTeX">Εξαγωγή .tex</button></div>
+      </details>
+    </section>
+    <div id="pdfPanel" hidden class="collapsible pdfpanel">
+      <div class="sectionHeading">
+        <h2>PDF ↔ Markdown Editor</h2>
+        <span
+          >Διόρθωση πηγής από το παραγόμενο PDF ή ανεξάρτητη επεξεργασία
+          εισαγόμενου PDF. Απαιτεί Python.</span
+        >
+      </div>
+      <div class="row">
+        <label class="file-button"
+          >Άνοιγμα PDF<input
+            type="file"
+            id="openPDF"
+            accept=".pdf,application/pdf"
+            hidden /></label
+        ><button id="pdfFromSource">Άνοιγμα παραγόμενου PDF</button
+        ><button id="pdfPrev">‹</button><span id="pdfPageNum">—</span
+        ><button id="pdfNext">›</button><button id="pdfUndo">↶ Undo</button
+        ><button id="pdfRedo">↷ Redo</button
+        ><button id="pdfExport">Λήψη επεξεργασμένου PDF</button>
+      </div>
+      <div class="pdf-workspace">
+        <div class="pdfcanvas" id="pdfCanvas">
+          <div id="pdfEmpty" class="pdf-empty">
+            Δεν έχει φορτωθεί PDF.<br /><b>Άνοιγμα παραγόμενου PDF</b> για PDF
+            ↔ Markdown, ή <b>Άνοιγμα PDF</b> για ανεξάρτητο αρχείο.
+          </div>
+          <img id="pdfImage" alt="Σελίδα PDF" draggable="false" hidden />
+          <div id="pdfRect" hidden></div>
+          <div id="pdfBlocks"></div>
+        </div>
+        <aside class="pdfcontrols">
+          <section id="pdfSourcePanel">
+            <h3>Επεξεργασία Markdown από PDF</h3>
+            <p class="subtext">
+              Δημιούργησε PDF από το Markdown και κάνε κλικ σε κείμενο ή
+              εξίσωση. Το αντίστοιχο πρωτότυπο block ανοίγει εδώ. Αλλάζεις την
+              πηγή και αναδημιουργείται το PDF. Για ανεξάρτητα PDF δεν γίνεται
+              ψευδής αντιστοίχιση.
+            </p>
+            <div id="pdfSourceStatus" class="message">
+              Δημιούργησε το PDF από την πηγή για ενεργή αντιστοίχιση.
+            </div>
+            <label
+              >Επιλεγμένο Markdown / LaTeX block<textarea
+                id="pdfSourceEdit"
+                rows="8"
+                spellcheck="false"
+                disabled
+                placeholder="Επίλεξε στοιχείο στη σελίδα PDF"
+              ></textarea>
+            </label>
+            <div class="row">
+              <button id="pdfSourceFind" disabled>Μετάβαση στο Markdown</button
+              ><button id="pdfSourceApply" class="strong" disabled>
+                Αποθήκευση στην πηγή + νέο PDF
+              </button>
+            </div>
+          </section>
+          <hr class="pdf-separator" />
+          <h3>Απευθείας επεξεργασία PDF (χωρίς σύνδεση με Markdown)</h3>
+          <p class="subtext">
+            Πάτα σε μπλοκ κειμένου ή σύρε ορθογώνιο στην εικόνα. Οι αλλαγές
+            είναι αναστρέψιμες μέσω Undo μέχρι την αποθήκευση.
+          </p>
+          <label
+            >Ενέργεια<select id="pdfOp">
+              <option value="replace">Αντικατάσταση κειμένου</option>
+              <option value="add_text">Προσθήκη κειμένου</option>
+              <option value="redact">Αφαίρεση περιεχομένου (redaction)</option>
+              <option value="highlight">Επισήμανση περιοχής</option>
+              <option value="image">Εικόνα στη θέση περιοχής</option>
+              <option value="note">Σχόλιο/σημείωση</option>
+            </select></label
+          ><label
+            >Κείμενο / σημείωση<textarea
+              id="pdfText"
+              rows="5"
+            ></textarea></label
+          ><label
+            >Μέγεθος κειμένου (pt)<input
+              type="number"
+              id="pdfFontSize"
+              value="10"
+              min="6"
+              max="24" /></label
+          ><label
+            >Αρχείο εικόνας (αν επιλεγεί)<input
+              type="file"
+              id="pdfImageFile"
+              accept="image/png,image/jpeg" /></label
+          ><button id="pdfApply" class="strong">Εφαρμογή αλλαγής</button
+          ><button id="pdfToSource">Εύρεση μπλοκ στην πηγή</button>
+          <div id="pdfInfo" class="message"></div>
+          <p class="warning">
+            Οι απευθείας αλλαγές σε PDF δεν συγχρονίζουν το αρχικό
+            Markdown/LaTeX. Για PR διόρθωσε την πηγή και αναδημιούργησε το PDF.
+            Η αντικατάσταση μπορεί να αλλάξει την τυπογραφία. Επίλεξε την
+            παραπάνω λειτουργία για κανονική διόρθωση πηγής.
+          </p>
+        </aside>
+      </div>
+    </div>
+    <main id="editorWorkspace" class="workspace">
+      <section class="pane">
+        <div class="paneTitle">
+          <strong>Markdown / LaTeX</strong>
+          <div class="row">
+            <button id="findSource" aria-label="Αναζήτηση στο κείμενο">
+              ⌕ Εύρεση</button
+            ><a href="#/tools" class="quiet-link">Εισαγωγή block…</a
+            ><span id="editInfo">Ctrl+S</span>
+          </div>
+        </div>
+        <div id="sourceFindBar" class="row" hidden>
+          <input
+            id="sourceQuery"
+            type="search"
+            placeholder="Αναζήτηση στο κείμενο…"
+            aria-label="Εύρεση στο Markdown"
+          /><button id="sourcePrev" aria-label="Προηγούμενο αποτέλεσμα">
+            ↑</button
+          ><button id="sourceNext" aria-label="Επόμενο αποτέλεσμα">↓</button
+          ><span id="sourceMatches" role="status"></span
+          ><button
+            id="sourceFindClose"
+            class="icon-button"
+            aria-label="Κλείσιμο αναζήτησης"
+          >
+            ×
+          </button>
+        </div>
+        <textarea
+          id="source"
+          spellcheck="false"
+          aria-label="Επεξεργασία Markdown"
+        >
+# Άσκηση 1 α)
+
+**Μεθοδολογία**
+
+1. Υπολογίζουμε την ισοδύναμη αντίσταση.
+2. Εφαρμόζουμε τον νόμο του Ohm.
+
+**Λύση**
+
+\[
+R_{\mathrm{eq}} = R_1+R_2 = 20\,\Omega
+\]
+
+\[
+I=\frac{100}{20}=5\,\mathrm{A}
+\]
+
+Επομένως, το ρεύμα είναι \(I=5\,\mathrm{A}\).
+
+# Άσκηση 1 β)
+
+**Μεθοδολογία**
+
+Χρησιμοποιούμε το αποτέλεσμα του α) ερωτήματος.
+
+**Λύση**
+
+Η ισχύς προκύπτει από την σχέση \(P=I^2R\).
+</textarea
+        >
+      </section>
+      <section class="pane">
+        <div class="paneTitle">
+          <strong>Προεπισκόπηση</strong>
+          <div class="row">
+            <button id="viewCover">Εξώφυλλο</button
+            ><button id="viewSolutions">Λύσεις</button
+            ><button id="btnPrint">Εκτύπωση → PDF</button>
+          </div>
+        </div>
+        <div class="previewframe">
+          <div id="docCover" class="sheet cover"></div>
+          <div id="docBody" class="sheet solution"></div>
+        </div>
+      </section>
+    </main>
+    <div id="message" class="toast" role="status" aria-live="polite">
+      Έτοιμο · άνοιξε τα στοιχεία εξέτασης για το εξώφυλλο.
+    </div>
+    <dialog id="prDialog">
+      <button
+        class="panel-close"
+        data-close-dialog="prDialog"
+        aria-label="Κλείσιμο GitHub"
+      >
+        ×
+      </button>
+      <h2>GitHub · Σύνδεση & Pull Request</h2>
+      <section class="github-account">
+        <div class="row" style="justify-content: space-between">
+          <strong>Λογαριασμός GitHub</strong
+          ><span id="githubAccountStatus" aria-live="polite"
+            >Δεν έχει ελεγχθεί</span
+          >
+        </div>
+        <p class="subtext">
+          Συνδέεσαι με τον δικό σου λογαριασμό μέσω GitHub CLI. Δεν εισάγεις
+          password/token στο Markdown Studio. Στα Windows ανοίγει ξεχωριστό
+          παράθυρο για την ασφαλή έγκριση στο GitHub.
+        </p>
+        <div class="row">
+          <button id="githubConnect" class="strong">Σύνδεση με GitHub</button
+          ><button id="githubRefresh">Έλεγχος σύνδεσης</button
+          ><button id="githubSetupGit">Ρύθμιση Git HTTPS</button>
+        </div>
+        <div id="githubAuthResult" class="message" aria-live="polite"></div>
+        <p class="subtext">
+          Σύνδεσμοι εγκατάστασης, αν λείπουν:
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://cli.github.com/"
+            >GitHub CLI</a
+          >
+          ·
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://git-scm.com/downloads/win"
+            >Git for Windows</a
+          >
+        </p>
+      </section>
+      <hr />
+      <h3>Δημιουργία Pull Request</h3>
+      <div id="prDetails"></div>
+      <div class="row">
+        <button id="prPreflight">Έλεγχος GitHub / credentials</button
+        ><button id="prConfirm" class="strong" disabled>
+          Επιβεβαίωση δημιουργίας PR</button
+        ><button id="prClose">Κλείσιμο</button>
+      </div>
+      <div id="prResult" class="message"></div>
+      <hr />
+      <label
+        >Έλεγχος ήδη υπάρχοντος PR<br /><input
+          id="prLookup"
+          placeholder="https://github.com/.../pull/123"
+          style="width: 100%"
+      /></label>
+      <div class="row">
+        <button id="prLookupBtn">Ανάκτηση κατάστασης PR</button>
+      </div>
+      <div id="prLookupResult" class="message"></div>
+    </dialog>
+    <input
+      type="file"
+      id="openMarkdown"
+      accept=".md,.markdown,.txt"
+      hidden
+    /><input
+      type="file"
+      id="templateFile"
+      accept=".json,application/json"
+      hidden
+    />
+    <section id="toolsPanel" class="collapsible" hidden></section>
+    <section
+      id="equationsPanel"
+      class="collapsible tool-panel"
+      hidden
+    ></section>
+    <section id="tablesPanel" class="collapsible tool-panel" hidden></section>
+    <section id="ocrPanel" class="collapsible tool-panel" hidden></section>
+    <section id="feedbackPanel" class="collapsible" hidden></section>
+    <dialog id="helpDialog">
+      <button
+        class="panel-close"
+        data-close-dialog="helpDialog"
+        aria-label="Κλείσιμο βοήθειας"
+      >
+        ×
+      </button>
+      <h2 id="helpTitle"></h2>
+      <p id="helpText"></p>
+      <div class="row">
+        <button id="helpFeedback">Σχόλιο για αυτή τη λειτουργία</button
+        ><button id="helpCopyLink">Αντιγραφή συνδέσμου</button>
+      </div>
+    </dialog>
+  </body>
+</html>
