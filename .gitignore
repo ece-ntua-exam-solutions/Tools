@@ -1,0 +1,27 @@
+# Python / environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+# Generated documents / local state
+*.log
+*.tmp
+.cache/
+model-cache/
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+# Development dependencies / browser test output
+node_modules/
+playwright-report/
+test-results/
+# Operating system files
+.DS_Store
+Thumbs.db
+# Reports and user feedback exported from the application
+Markdown_Studio_Feedback_*.zip
+PR_Report.html
