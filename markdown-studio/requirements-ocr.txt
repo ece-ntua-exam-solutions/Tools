@@ -1,0 +1,4 @@
+# Optional. Install only for the Image equation -> LaTeX tool.
+# Model weights are loaded/downloaded on explicit first recognition.
+pix2tex==0.1.4
+Pillow>=10,<12
